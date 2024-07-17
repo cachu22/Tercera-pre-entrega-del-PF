@@ -8,6 +8,7 @@ import routerMSG from '../daos/messageDao.mongo.js';
 import routerCookie from './Cookies/pruebas.router.js';
 import { cartsRouterMSG } from './api/carts.routerDB.js';
 import productsRouterDB from './api/productsRouterDB.js';
+import { isAuthenticated } from "../middlewares/Auth.middleware.js";
 
 const routerApp = Router()
 

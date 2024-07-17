@@ -32,30 +32,48 @@ class UserController {
         }
     }
 
+    // getOneInfo = async (req, res) => {
+    //     try {
+    //         const userId = req.user?.id;
+    
+    //         if (!userId) {
+    //             return res.status(400).json({ status: 'error', message: 'ID de usuario no proporcionado' });
+    //         }
+    
+    //         if (typeof userId === 'string' && userId.length === 24) {
+    //             const user = await userService.getOneInfo({ _id: userId });
+    
+    //             if (!user) {
+    //                 return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
+    //             }
+    
+    //             res.json({ status: 'success', payload: user });
+    //         } else {
+    //             return res.status(400).json({ status: 'error', message: 'ID de usuario inválido' });
+    //         }
+    //     } catch (error) {
+    //         console.error('Error al obtener la información del usuario:', error);
+    //         res.status(500).json({ status: 'error', message: 'Error al obtener la información del usuario' });
+    //     }
+    // }
+
     getOneInfo = async (req, res) => {
         try {
-            // Obtener el ID del parámetro de la ruta
             const userId = req.params.uid;
-    
             if (!userId) {
-                return res.status(400).json({ status: 'error', message: 'ID de usuario no proporcionado' });
+                return res.status(400).json({ status: 'error', message: 'Invalid user ID' });
             }
     
-            // Verifica si el ID es una cadena y tiene la longitud correcta
-            if (typeof userId === 'string' && userId.length === 24) {
-                const user = await userService.getOneInfo(userId); // Pasa el ID directamente
-                if (!user) {
-                    return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
-                }
-                res.json({ status: 'success', payload: user });
-            } else {
-                return res.status(400).json({ status: 'error', message: 'ID de usuario inválido' });
+            const user = await this.userService.getUser(userId);
+            if (!user) {
+                return res.status(404).json({ status: 'error', message: 'User not found' });
             }
+    
+            res.json({ status: 'success', payload: user });
         } catch (error) {
-            console.log(error);
-            res.status(500).send({ status: 'error', message: 'Error al obtener la información del usuario' });
+            res.status(500).json({ status: 'error', message: 'Server error' });
         }
-    }
+    };
 
     create = async (req, res) => {
         try {

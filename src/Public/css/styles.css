@@ -39,6 +39,21 @@ ul {
   height: auto; /* Mantiene la proporción de la imagen */
 }
 
+/* Apartado de current */
+#user-info {
+  text-align: center;
+  font-size: 35px;
+  color: white;
+  text-shadow: black 0.1rem 0.1rem 0.2rem; 
+  margin-top: 2rem;
+  padding: 20px;
+}
+
+#user-info p {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
 /*FUENTES*/
 /*Fuente__General y background*/
 body {

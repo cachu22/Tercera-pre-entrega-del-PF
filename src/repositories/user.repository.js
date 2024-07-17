@@ -15,14 +15,20 @@ export default class UserRepository {
         return user ? new UserDto(user) : null;
     }
 
+    // async getOneInfo(filter) {
+    //     if (filter._id && typeof filter._id === 'string' && filter._id.length === 24) {
+    //         filter._id = new mongoose.Types.ObjectId(filter._id);
+    //     }
+    //     const user = await this.userDao.getOneInfo(filter);
+    //     return user ? new UserDto(user) : null;
+    // }
     getOneInfo = async (filter) => {
-        // Verifica si el filtro contiene un _id y conviértelo a ObjectId si es necesario
+        // Convierte _id a ObjectId si es necesario
         if (filter._id && typeof filter._id === 'string' && filter._id.length === 24) {
             filter._id = new ObjectId(filter._id);
         }
-        const user = await this.userDao.getOneInfo(filter);
+        const user = await this.userDao.getOne(filter);
         return user ? new UserDto(user) : null;
-        console.log('datos de user.repository-getUserInfo', user);
     }
 
     createUser = async (user) => {

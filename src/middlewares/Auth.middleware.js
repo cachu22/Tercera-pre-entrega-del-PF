@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import { PRIVATE_KEY } from '../utils/jwt.js';
+import { userService } from '../service/index.js';
 
 // Middleware de autorización para administradores y usuarios normales
 export function adminOrUserAuth(req, res, next) {
@@ -40,31 +41,50 @@ export const authenticateToken = (req, res, next) => {
     });
 };
 
-export const isAuthenticated = async (req, res, next) => {
-    // Obtén el token del encabezado Authorization
-    const token = req.headers['authorization']?.split(' ')[1];
+// export const isAuthenticated = async (req, res, next) => {
+//     // Obtén el token del encabezado Authorization
+//     const token = req.headers['authorization']?.split(' ')[1];
 
+//     if (!token) {
+//         return res.status(401).json({ status: 'error', message: 'No token provided' });
+//     }
+
+//     try {
+//         // Verifica y decodifica el token JWT
+//         const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+
+//         // Obtén el usuario usando el ID decodificado del token
+//         const user = await userService.getUser({ _id: decoded.id });
+
+//         if (!user) {
+//             return res.status(404).json({ status: 'error', message: 'User not found' });
+//         }
+
+//         // Añade el ID del usuario al objeto req
+//         req.user = { id: decoded.id };
+
+//         next(); // Pasa al siguiente middleware o controlador
+//     } catch (error) {
+//         console.error('Error during authentication:', error);
+//         return res.status(401).json({ status: 'error', message: 'Unauthorized' });
+//     }
+// };
+
+export const isAuthenticated = (req, res, next) => {
+    const token = req.cookies['token'];
     if (!token) {
-        return res.status(401).json({ status: 'error', message: 'No token provided' });
+        console.log('No token provided');
+        return res.status(401).json({ status: 'error', message: 'Unauthorized' });
     }
 
     try {
-        // Verifica y decodifica el token JWT
-        const decoded = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
-
-        // Obtén el usuario usando el ID decodificado del token
-        const user = await userService.getUser({ _id: decoded.id });
-
-        if (!user) {
-            return res.status(404).json({ status: 'error', message: 'User not found' });
-        }
-
-        // Añade el ID del usuario al objeto req
-        req.user = { id: decoded.id };
-
-        next(); // Pasa al siguiente middleware o controlador
+        console.log('Token received:', token);
+        const decoded = jwt.verify(token, PRIVATE_KEY);
+        console.log('Decoded token:', decoded);
+        req.user = decoded;
+        next();
     } catch (error) {
-        console.error('Error during authentication:', error);
+        console.error('JWT verification failed:', error);
         return res.status(401).json({ status: 'error', message: 'Unauthorized' });
     }
 };

@@ -5,14 +5,15 @@ import usersDaoMongo from '../daos/MONGO/MONGODBNUBE/usersDao.mongo.js';
 import { createHash, isValidPassword, generateRandomPassword } from '../utils/bcrypt.js';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { PRIVATE_KEY } from '../utils/jwt.js';
-
-const userService = new usersDaoMongo();
+import { userService } from '../service/index.js';
 
 const cookieExtractor = req => {
     let token = null;
-    if(req && req.cookies) token = req.cookies['token'];
+    if (req && req.cookies) {
+        token = req.cookies['token'];
+    }
     return token;
-}
+};
 
 export const initializePassport = () => {
     passport.use('jwt', new JwtStrategy({
@@ -20,13 +21,17 @@ export const initializePassport = () => {
         secretOrKey: PRIVATE_KEY
     }, async (jwt_payload, done) => {
         try {
-            const user = await userService.getUser(jwt_payload.id); // Pasa el id como un objeto
+            console.log('JWT payload:', jwt_payload);
+            const user = await userService.getUser({ _id: jwt_payload.id });
             if (user) {
+                console.log('User found:', user);
                 return done(null, user);
             } else {
+                console.log('User not found');
                 return done(null, false);
             }
         } catch (error) {
+            console.log('Error in JWT authentication:', error);
             return done(error, false);
         }
     }));

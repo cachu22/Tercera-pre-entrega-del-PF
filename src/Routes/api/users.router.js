@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import UserController from '../../controllers/users.controller.js';
-import { isAuthenticated } from '../../middlewares/Auth.middleware.js';
+import passport from 'passport';
 
-
+const userController = new UserController()
 
 const router = Router();
 const {

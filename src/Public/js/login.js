@@ -2,8 +2,9 @@
 const apiUrl = 'http://localhost:8000';  
 
 // Obtener el token del almacenamiento local
-const token = localStorage.getItem('token');
+// const token = localStorage.getItem('token');
 
+const token = generateToken({ id: user._id });
 
 
 $.ajax({
